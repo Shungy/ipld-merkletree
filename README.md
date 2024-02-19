@@ -1,66 +1,48 @@
-## Foundry
+## IPDL-based Merkle tree in Solidity
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
+Using IPDL-based merkle trees in Ethereum merkle proofs allows generating an IPFS content identifier (CID) from a given root hash.
+Using the generated CID, anyone can retrieve the entire merkle tree from IPFS and generate a proof in a decentralized and permissionless manner.
 
 ## Usage
 
-### Build
+### Merkle tree generation
 
-```shell
-$ forge build
+### Solidity
+
+The inclusion of `data` within a merkle tree with root `rootHash` can be checked with
+
+```solidity
+    MerkleProofLib.verify(proof, rootHash, abi.encode(data));
 ```
 
-### Test
+where `proof` is an array of raw node hashes, and not their CIDs.
 
-```shell
-$ forge test
+The CID of the `rootHash`, or any other node hash can be exposed using
+
+```solidity
+    MerkleProofLib.toCID(rootHash);
 ```
 
-### Format
+The base32 CID can be obtained by
 
 ```shell
-$ forge fmt
+    echo "$base_cid" | sed 's/^0x00/f/' | ipfs cid format -b base32
 ```
 
-### Gas Snapshots
+where `$base_cid` is the raw bytes output from `MerkleProofLib.toCID()`.
 
-```shell
-$ forge snapshot
-```
+## Safety
 
-### Anvil
+This work has not been reviewed by an independent security researcher. Use it at your own risk.
 
-```shell
-$ anvil
-```
+### Nodes as leaves
 
-### Deploy
+This implementation always hashes CBOR representation of input bytes. Therefore it is not possible to pass special values that can clash with the nodes.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+### Second preimage attack
 
-### Cast
+This implementation is not vulnerable to second preimage attack. This is due to the difference in how leaves and nodes are generated. In CBOR encoding, leaves are byte strings and user input is always prepended by a byte in the range `0x40...0x5f`. Nodes on the other hand, are combined as an array of two, hence always prepended by `0x82`.
 
-```shell
-$ cast <subcommand>
-```
+## Gas Cost
 
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This implementation is expected to be slightly more expensive than OpenZeppelin's implementation due to encoding operations involving insertion of extra bytes.
