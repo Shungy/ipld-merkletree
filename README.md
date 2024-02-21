@@ -145,3 +145,5 @@ NPM repo. Proper versioning, etc.
 Shell scripts should be replaced by a proper language. Especially a JS script for generating proof from CID to enable usage in web browser dapps.
 
 Potentially leaf data can be native CBOR encoded instead of Solidity ABI encoded bytes encoded as CBOR. That could for example simplify querying IPFS for an address associated to a leaf. Eg. for (address user, uint256 amount) it could allow user to construct proof without downloading the entire merkle tree even if they don't know the amount airdropped.
+
+standardize???
