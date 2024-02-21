@@ -1,8 +1,8 @@
 This project defines an IPLD-based merkle tree to be used in Solidity, provides a Solidity library for merkle proof verification, and provides shell scripts for tree and proof generations.
 
-## IPDL-based Merkle tree in Solidity
+## IPLD-based Merkle tree in Solidity
 
-Using IPDL-based merkle trees in Ethereum merkle proofs allows generating an IPFS content identifier (CID) from a given root hash.
+Using IPLD-based merkle trees in Ethereum merkle proofs allows generating an IPFS content identifier (CID) from a given root hash.
 Using the generated CID, anyone can retrieve the entire merkle tree from IPFS and generate a proof in a decentralized and permissionless manner.
 
 ## Design
