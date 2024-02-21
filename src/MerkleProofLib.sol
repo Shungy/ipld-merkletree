@@ -18,7 +18,9 @@ pragma solidity ^0.8.4;
 ///
 ///         Keccak256 hash of the final operation is checked against the root hash.
 ///
-/// @author shung (https://github.com/shung)
+///         During tree generation, for empty objects, 0xf6 (`null`) is used.
+///
+/// @author shung (https://github.com/Shungy)
 /// @author Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/MerkleProofLib.sol)
 /// @author Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/MerkleProofLib.sol)
 /// @author Modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/MerkleProof.sol)
@@ -31,7 +33,9 @@ library MerkleProofLib {
     ) internal pure returns (bool isValid) {
         bytes32 node = hashLeaf(leaf);
         uint256 length = proof.length;
-        for (uint256 i; i < length; ++i) node = hashNodes(node, proof[i]);
+        unchecked {
+            for (uint256 i; i < length; ++i) node = hashNodes(node, proof[i]);
+        }
         return node == root;
     }
 

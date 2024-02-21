@@ -172,4 +172,20 @@ contract MerkleProofLibTest is Test {
         );
         assertEq(calculated, expected);
     }
+
+    // From example tree in `example/leaves.txt`.
+    // Tree generated with `script/generate_tree.sh`
+    // Proof generated with `script/generate_proof.sh`
+    function test_validation() public {
+        bytes32 root = 0x2425a640bc9b515ccd3e7b16221a74bf521a3560b0312530b429f8d2f72d8944;
+        address caller = address(type(uint160).max);
+        uint256 amount = 69;
+        bytes32[] memory proof = new bytes32[](4);
+        proof[0] = 0x9b131f2e38a97ff2bc47373e06a07f8c13df2b09e9ff9d7fa8b0396f3296659a;
+        proof[1] = 0x905fc8be9dd02f1021b3095e4fd08379add60b5c8bb39d002cfbdd7d3710ba84;
+        proof[2] = 0xc1634eb9c4d5b99cfc8f3bd123be3e2a3f04f3d28b1d65255cbf363cbd246408;
+        proof[3] = 0x8a5736b9d5d7f8fe341f87678567e4e90f4ce297736e1c5c9d027936d854281c;
+        bool proved = MerkleProofLib.verify(proof, root, abi.encode(caller, amount));
+        assertTrue(proved);
+    }
 }
